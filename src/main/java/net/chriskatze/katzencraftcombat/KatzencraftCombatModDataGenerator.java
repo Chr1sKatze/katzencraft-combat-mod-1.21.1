@@ -3,6 +3,7 @@ package net.chriskatze.katzencraftcombat;
 import net.chriskatze.katzencraftcombat.datagen.ModItemTagProvider;
 import net.chriskatze.katzencraftcombat.datagen.ModModelProvider;
 import net.chriskatze.katzencraftcombat.datagen.ModRecipeGenerator;
+import net.chriskatze.katzencraftcombat.datagen.ModSpellGenerator;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.registry.RegistryBuilder;
@@ -16,6 +17,7 @@ public class KatzencraftCombatModDataGenerator implements DataGeneratorEntrypoin
 		pack.addProvider(ModItemTagProvider::new);
 		pack.addProvider(ModModelProvider::new);
 		pack.addProvider(ModRecipeGenerator::new);
+		pack.addProvider(ModSpellGenerator::new);
 	}
 
 	@Override

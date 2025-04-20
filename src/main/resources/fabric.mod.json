@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "katzencraftcombat",
+	"version": "${version}",
+	"name": "Katzencraft Combat Mod",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/katzencraftcombat/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.chriskatze.katzencraftcombat.KatzencraftCombatMod"
+		],
+		"fabric-datagen": [
+			"net.chriskatze.katzencraftcombat.KatzencraftCombatModDataGenerator"
+		],
+		"client": [
+			"net.chriskatze.katzencraftcombat.KatzencraftCombatModClient"
+		]
+	},
+	"mixins": [
+		"katzencraftcombat.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.13",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"spell_power": ">=1.2.3+1.21.1"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

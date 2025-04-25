@@ -1,7 +1,5 @@
 package net.chriskatze.katzencraftcombat.item;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import net.chriskatze.katzencraftcombat.KatzencraftCombatMod;
 
 import net.minecraft.item.*;
@@ -10,7 +8,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
-import net.minecraft.util.Lazy;
 import net.spell_engine.api.config.AttributeModifier;
 import net.spell_engine.api.config.WeaponConfig;
 import net.spell_engine.api.item.Equipment;
@@ -33,40 +30,38 @@ public class ModItems {
         // Constructor Overload: Constructor only used to have fewer parameters than original one
         public WeaponItem(String name,
                           Weapon.CustomMaterial material,
-                          Ingredient repairIngredient,
                           float attackDamage,
                           float attackSpeed,
                           Identifier spellSchoolId,
                           float spellBonus) {
             // call original constructor with last parameter (Item.Settings)
-            this(name, material, repairIngredient, attackDamage, attackSpeed, spellSchoolId, spellBonus, new Item.Settings());
+            this(name, material, attackDamage, attackSpeed, spellSchoolId, spellBonus, new Item.Settings());
         }
 
         // Wenn das nicht geht -> Mario ist schuld!
         public WeaponItem(String name,
                           ToolMaterials vanillaMaterial,
-                          Ingredient repairIngredient,
+                          Item vanillaItem,
                           float attackDamage,
                           float attackSpeed,
                           Identifier spellSchoolId,
                           float spellBonus,
                           Item.Settings settings) {
-            // example call: new WeaponItem(name, ToolMaterials.DIAMOND, Items.DIAMOND, attackDamage, attackSpeed, spellSchoolId, spellBonus, settings);
+            // example call: new WeaponItem(name, ToolMaterials.DIAMOND, Items.DIAMOND, attackDamage, attackSpeed, spellSchoolId, spellBonus, new Item.Settings());
             // call original constructor with ToolMaterials
-            this(name, Weapon.CustomMaterial.matching(vanillaMaterial, () -> repairIngredient), repairIngredient, attackDamage, attackSpeed, spellSchoolId, spellBonus, settings);
+            this(name, Weapon.CustomMaterial.matching(vanillaMaterial, () -> Ingredient.ofItems(vanillaItem)), attackDamage, attackSpeed, spellSchoolId, spellBonus, settings);
         }
 
         // Constructor (original)
         public WeaponItem(String name,
                           Weapon.CustomMaterial material,
-                          Ingredient repairIngredient,
                           float attackDamage,
                           float attackSpeed,
                           Identifier spellSchoolId,
                           float spellBonus,
                           Item.Settings settings) {
 
-            // SPELLSWORD CREATOR ----------------------------------------------------------------------------------------------
+            // SPELLSWORD CREATOR --------------------------------------------------------------------------------------
             var entry = new Weapon.Entry(
                     KatzencraftCombatMod.MOD_ID,
                     name,
@@ -96,12 +91,13 @@ public class ModItems {
 
     public static final WeaponItem STEEL_SHORTSWORD = new WeaponItem(
             "steel_shortsword",
-            ModToolMaterials.STEEL,
-            Ingredient.ofItems(Items.DIAMOND),
+            ToolMaterials.DIAMOND,
+            Items.DIAMOND,
             3.0F,
             -2.8F,
             SpellSchools.HEALING.id,
-            2.0F
+            2.0F,
+            new Item.Settings()
             // new Item.Settings().attributeModifiers(SwordItem.createAttributeModifiers(ToolMaterials.DIAMOND,3,-3.0f))
             // wenn keine custom attribute verwendet werden sollen
     );

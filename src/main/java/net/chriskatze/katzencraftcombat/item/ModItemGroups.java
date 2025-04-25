@@ -9,6 +9,7 @@ public class ModItemGroups {
 
     // ADDS ITEMS INTO THE CORRESPONDING VANILLA CREATIVE TAB GROUPS ---------------------------------------------------
     private static void Mod_Ingredients(FabricItemGroupEntries entries) {
+
         entries.add(ModItems.STEEL_INGOT);
     }
 
@@ -17,7 +18,7 @@ public class ModItemGroups {
     }
 
     private static void Mod_Combat(FabricItemGroupEntries entries) {
-        entries.add(ModItems.STEEL_SHORTSWORD);
+
     }
 
     // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

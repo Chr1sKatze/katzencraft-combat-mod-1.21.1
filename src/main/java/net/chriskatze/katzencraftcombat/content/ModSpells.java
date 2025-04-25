@@ -17,6 +17,17 @@ import java.util.List;
 
 public class ModSpells {
 
+    public record Entry(Identifier id, Spell spell, String title, String description,
+                        @Nullable SpellTooltip.DescriptionMutator mutator) { }
+    public static final List<Entry> entries = new ArrayList<>();
+    private static Entry add(Entry entry) {
+        entries.add(entry);
+        return entry;
+    }
+
+    private static final String GROUP_PRIMARY = "primary";
+
+    // -----------------------------------------------------------------------------------------------------------------
     private static Spell activeSpellBase() {
         var spell = new Spell();
         spell.type = Spell.Type.ACTIVE;
@@ -28,28 +39,6 @@ public class ModSpells {
 
         return spell;
     }
-    public record Entry(Identifier id, Spell spell, String title, String description,
-                        @Nullable SpellTooltip.DescriptionMutator mutator) { }
-    public static final List<Entry> entries = new ArrayList<>();
-    private static Entry add(Entry entry) {
-        entries.add(entry);
-        return entry;
-    }
-
-    private static ParticleBatch castingParticles(String particleId) {
-        return new ParticleBatch(
-                particleId,
-                ParticleBatch.Shape.WIDE_PIPE, ParticleBatch.Origin.FEET,
-                1, 0.05F, 0.1F);
-    }
-    private static final Identifier HOLY_SPARKS = SpellEngineParticles.getMagicParticleVariant(
-            SpellEngineParticles.HOLY,
-            SpellEngineParticles.MagicParticleFamily.Shape.SPARK,
-            SpellEngineParticles.MagicParticleFamily.Motion.FLOAT
-    ).id();
-
-    private static final String GROUP_PRIMARY = "primary";
-
     private static Spell.Impact createHeal(float coefficient) {
         var buff = new Spell.Impact();
         buff.action = new Spell.Impact.Action();
@@ -59,11 +48,6 @@ public class ModSpells {
         return buff;
     }
 
-    private static void impactDeniedForMechanical(Spell.Impact impact) {
-        var modifier = createImpactModifier("#spell_engine:mechanical");
-        modifier.execute = TriState.DENY;
-        impact.target_modifiers = List.of(modifier);
-    }
     private static Spell.Impact.TargetModifier createImpactModifier(String entityType) {
         var condition = new Spell.TargetCondition();
         condition.entity_type = entityType;
@@ -71,8 +55,52 @@ public class ModSpells {
         modifier.conditions = List.of(condition);
         return modifier;
     }
+
+    private static void impactDeniedForMechanical(Spell.Impact impact) {
+        var modifier = createImpactModifier("#spell_engine:mechanical");
+        modifier.execute = TriState.DENY;
+        impact.target_modifiers = List.of(modifier);
+    }
+
+    private static void configureCooldown(Spell spell, float duration) {
+        if (spell.cost == null) {
+            spell.cost = new Spell.Cost();
+        }
+        spell.cost.cooldown = new Spell.Cost.Cooldown();
+        spell.cost.cooldown.duration = duration;
+    }
+
+//    private static void configureItemCost(Spell spell, String itemId) {
+//        if (spell.cost == null) {
+//            spell.cost = new Spell.Cost();
+//        }
+//        spell.cost.item = new Spell.Cost.Item();
+//        spell.cost.item.id = itemId;
+//    }
+
+    private static ParticleBatch castingParticles(String particleId) {
+        return new ParticleBatch(
+                particleId,
+                ParticleBatch.Shape.WIDE_PIPE, ParticleBatch.Origin.FEET,
+                1, 0.05F, 0.1F);
+    }
+
+    // PARTICLES -------------------------------------------------------------------------------------------------------
+    private static final Identifier HOLY_SPARKS = SpellEngineParticles.getMagicParticleVariant(
+            SpellEngineParticles.HOLY,
+            SpellEngineParticles.MagicParticleFamily.Shape.SPARK,
+            SpellEngineParticles.MagicParticleFamily.Motion.FLOAT
+    ).id();
+
+    private static final Identifier HEALING_PARTICLES = SpellEngineParticles.getMagicParticleVariant(
+            SpellEngineParticles.NATURE,
+            SpellEngineParticles.MagicParticleFamily.Shape.IMPACT,
+            SpellEngineParticles.MagicParticleFamily.Motion.ASCEND
+    ).id();
+
     // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+    // HEAL SPELL ------------------------------------------------------------------------------------------------------
     public static final Entry HEAL = add(heal());
     private static Entry heal() {
         var id = Identifier.of(KatzencraftCombatMod.MOD_ID, "heal");
@@ -105,12 +133,12 @@ public class ModSpells {
         var heal = createHeal(0.8F);
         impactDeniedForMechanical(heal);
         heal.sound = new Sound(SpellEngineSounds.GENERIC_HEALING_IMPACT_1.id());
-//        heal.particles = new ParticleBatch[] {
-//                new ParticleBatch(
-//                        HEALING_PARTICLES.toString(),
-//                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
-//                        20, 0.02F, 0.15F)
-//        };
+        heal.particles = new ParticleBatch[] {
+                new ParticleBatch(
+                        HEALING_PARTICLES.toString(),
+                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
+                        20, 0.02F, 0.15F)
+        };
         spell.impacts = List.of(heal);
 
         configureCooldown(spell, 4);
@@ -118,27 +146,6 @@ public class ModSpells {
 
         return new Entry(id, spell, title, description, null);
     }
-//    private static final Identifier HEALING_PARTICLES = SpellEngineParticles.getMagicParticleVariant(
-//            SpellEngineParticles.NATURE,
-//            SpellEngineParticles.MagicParticleFamily.Shape.IMPACT,
-//            SpellEngineParticles.MagicParticleFamily.Motion.ASCEND
-//    ).id();
-
-    private static void configureCooldown(Spell spell, float duration) {
-        if (spell.cost == null) {
-            spell.cost = new Spell.Cost();
-        }
-        spell.cost.cooldown = new Spell.Cost.Cooldown();
-        spell.cost.cooldown.duration = duration;
-    }
-
-//    private static void configureItemCost(Spell spell, String itemId) {
-//        if (spell.cost == null) {
-//            spell.cost = new Spell.Cost();
-//        }
-//        spell.cost.item = new Spell.Cost.Item();
-//        spell.cost.item.id = itemId;
-//    }
 
     // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 

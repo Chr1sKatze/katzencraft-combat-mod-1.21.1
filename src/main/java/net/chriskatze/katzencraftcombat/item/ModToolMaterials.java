@@ -7,10 +7,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.TagKey;
+import net.spell_engine.api.item.weapon.Weapon;
 
-public enum ModToolMaterials implements ToolMaterial{
+public class ModToolMaterials extends Weapon.CustomMaterial {
 
-        STEEL(ModTags.Blocks.INCORRECT_FOR_STEEL_TOOL, 59, 2.0F, 0.0F, 15, () -> Ingredient.ofItems(ModItems.STEEL_INGOT));
+        public static ModToolMaterials STEEL = new ModToolMaterials(ModTags.Blocks.INCORRECT_FOR_STEEL_TOOL, 59, 2.0F, 0.0F, 15, () -> Ingredient.ofItems(ModItems.STEEL_INGOT));
 
         private final TagKey<Block> inverseTag;
         private final int itemDurability;

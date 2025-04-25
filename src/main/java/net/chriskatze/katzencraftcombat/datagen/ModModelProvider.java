@@ -24,6 +24,6 @@ public class ModModelProvider extends FabricModelProvider {
 
         // GENERATES STANDARD ITEM MODELS WITH PROVIDED TEXTURE --------------------------------------------------------
         itemModelGenerator.register(ModItems.STEEL_INGOT, Models.GENERATED);
-        itemModelGenerator.register(ModItems.STEEL_SHORTSWORD, Models.HANDHELD);
+        itemModelGenerator.register(ModItems.STEEL_SHORTSWORD.ITEM, Models.HANDHELD);
     }
 }
